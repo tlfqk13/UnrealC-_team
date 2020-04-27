@@ -12,8 +12,8 @@ ASGameState::ASGameState(const class FObjectInitializer& ObjectInitializer)
 	TimeScale = 8.0f;
 	bIsNight = false;
 
-	SunriseTimeMark = 6.0f;
-	SunsetTimeMark = 18.0f;
+	SunriseTimeMark = 18.0f;
+	SunsetTimeMark = 3.0f;
 }
 
 
