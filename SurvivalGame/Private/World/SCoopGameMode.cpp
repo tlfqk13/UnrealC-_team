@@ -59,7 +59,7 @@ void ASCoopGameMode::RestartPlayer(class AController* NewPlayer)
 	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(this);
 	if (NavSystem && NavSystem->GetRandomPointInNavigableRadius(SpawnOrigin, 250.0f, StartLocation))
 	{
-		// Try to create a pawn to use of the default class for this player
+		
 		if (NewPlayer->GetPawn() == nullptr && GetDefaultPawnClassForController(NewPlayer) != nullptr)
 		{
 			FActorSpawnParameters SpawnInfo;
@@ -80,14 +80,14 @@ void ASCoopGameMode::RestartPlayer(class AController* NewPlayer)
 		{
 			NewPlayer->Possess(NewPlayer->GetPawn());
 
-			// If the Pawn is destroyed as part of possession we have to abort
+		
 			if (NewPlayer->GetPawn() == nullptr)
 			{
 				NewPlayer->FailedToSpawnPawn();
 			}
 			else
 			{
-				// Set initial control rotation to player start's rotation
+				
 				NewPlayer->ClientSetRotation(NewPlayer->GetPawn()->GetActorRotation(), true);
 
 				FRotator NewControllerRot = StartRotation;

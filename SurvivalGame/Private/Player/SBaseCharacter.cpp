@@ -33,7 +33,7 @@ float ASBaseCharacter::GetHealth() const
 
 float ASBaseCharacter::GetMaxHealth() const
 {
-	// Retrieve the default value of the health property that is assigned on instantiation.
+	
 	return GetClass()->GetDefaultObject<ASBaseCharacter>()->Health;
 }
 
@@ -52,7 +52,6 @@ float ASBaseCharacter::TakeDamage(float Damage, struct FDamageEvent const& Damag
 		return 0.f;
 	}
 
-	/* Modify based based on gametype rules */
 	ASGameMode* MyGameMode = Cast<ASGameMode>(GetWorld()->GetAuthGameMode());
 	Damage = MyGameMode ? MyGameMode->ModifyDamage(Damage, this, DamageEvent, EventInstigator, DamageCauser) : Damage;
 
@@ -64,7 +63,7 @@ float ASBaseCharacter::TakeDamage(float Damage, struct FDamageEvent const& Damag
 		{
 			bool bCanDie = true;
 
-			/* Check the damagetype, always allow dying if the cast fails, otherwise check the property if player can die from damagetype */
+			
 			if (DamageEvent.DamageTypeClass)
 			{
 				USDamageType* DmgType = Cast<USDamageType>(DamageEvent.DamageTypeClass->GetDefaultObject());
@@ -77,13 +76,13 @@ float ASBaseCharacter::TakeDamage(float Damage, struct FDamageEvent const& Damag
 			}
 			else
 			{
-				/* Player cannot die from this damage type, set hitpoints to 1.0 */
+				
 				Health = 1.0f;
 			}
 		}
 		else
 		{
-			/* Shorthand for - if x != null pick1 else pick2 */
+			
 			APawn* Pawn = EventInstigator ? EventInstigator->GetPawn() : nullptr;
 			PlayHit(ActualDamage, DamageEvent, Pawn, DamageCauser, false);
 		}
@@ -95,7 +94,7 @@ float ASBaseCharacter::TakeDamage(float Damage, struct FDamageEvent const& Damag
 
 bool ASBaseCharacter::CanDie(float KillingDamage, FDamageEvent const& DamageEvent, AController* Killer, AActor* DamageCauser) const
 {
-	/* Check if character is already dying, destroyed or if we have authority */
+	
 	if (bIsDying ||
 		IsPendingKill() ||
 		Role != ROLE_Authority ||
@@ -123,11 +122,11 @@ bool ASBaseCharacter::Die(float KillingDamage, FDamageEvent const& DamageEvent, 
 
 	Health = FMath::Min(0.0f, Health);
 
-	/* Fallback to default DamageType if none is specified */
+	
 	UDamageType const* const DamageType = DamageEvent.DamageTypeClass ? DamageEvent.DamageTypeClass->GetDefaultObject<UDamageType>() : GetDefault<UDamageType>();
 	Killer = GetDamageInstigator(Killer, *DamageType);
 
-	/* Notify the gamemode we got killed for scoring and game over state */
+	
 	AController* KilledPlayer = Controller ? Controller : Cast<AController>(GetOwner());
 	GetWorld()->GetAuthGameMode<ASGameMode>()->Killed(Killer, KilledPlayer, this, DamageType);
 
@@ -151,7 +150,7 @@ void ASBaseCharacter::OnDeath(float KillingDamage, FDamageEvent const& DamageEve
 
 	DetachFromControllerPendingDestroy();
 
-	/* Disable all collision on capsule */
+	
 	UCapsuleComponent* CapsuleComp = GetCapsuleComponent();
 	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CapsuleComp->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -165,12 +164,12 @@ void ASBaseCharacter::OnDeath(float KillingDamage, FDamageEvent const& DamageEve
 
 	SetRagdollPhysics();
 
-	/* Apply physics impulse on the bone of the enemy skeleton mesh we hit (ray-trace damage only) */
+	
 	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
 	{
 		FPointDamageEvent PointDmg = *((FPointDamageEvent*)(&DamageEvent));
 		{
-			// TODO: Use DamageTypeClass->DamageImpulse
+			
 			Mesh3P->AddImpulseAtLocation(PointDmg.ShotDirection * 12000, PointDmg.HitInfo.ImpactPoint, PointDmg.HitInfo.BoneName);
 		}
 	}
@@ -178,7 +177,7 @@ void ASBaseCharacter::OnDeath(float KillingDamage, FDamageEvent const& DamageEve
 	{
 		FRadialDamageEvent RadialDmg = *((FRadialDamageEvent const*)(&DamageEvent));
 		{
-			Mesh3P->AddRadialImpulse(RadialDmg.Origin, RadialDmg.Params.GetMaxRadius(), 100000 /*RadialDmg.DamageTypeClass->DamageImpulse*/, ERadialImpulseFalloff::RIF_Linear);
+			Mesh3P->AddRadialImpulse(RadialDmg.Origin, RadialDmg.Params.GetMaxRadius(), 100000 , ERadialImpulseFalloff::RIF_Linear);
 		}
 	}
 }
@@ -217,7 +216,7 @@ void ASBaseCharacter::SetRagdollPhysics()
 
 	if (!bInRagdoll)
 	{
-		// Immediately hide the pawn
+		
 		TurnOff();
 		SetActorHiddenInGame(true);
 		SetLifeSpan(1.0f);
@@ -257,10 +256,10 @@ void ASBaseCharacter::ReplicateHit(float DamageTaken, struct FDamageEvent const&
 	FDamageEvent const& LastDamageEvent = LastTakeHitInfo.GetDamageEvent();
 	if (PawnInstigator == LastTakeHitInfo.PawnInstigator.Get() && LastDamageEvent.DamageTypeClass == LastTakeHitInfo.DamageTypeClass)
 	{
-		// Same frame damage
+	
 		if (bKilled && LastTakeHitInfo.bKilled)
 		{
-			// Redundant death take hit, ignore it
+			
 			return;
 		}
 
@@ -325,8 +324,8 @@ bool ASBaseCharacter::IsSprinting() const
 	}
 
 	return bWantsToRun && !IsTargeting() && !GetVelocity().IsZero()
-		// Don't allow sprint while strafing sideways or standing still (1.0 is straight forward, -1.0 is backward while near 0 is sideways or standing still)
-		&& (FVector::DotProduct(GetVelocity().GetSafeNormal2D(), GetActorRotation().Vector()) > 0.8); // Changing this value to 0.1 allows for diagonal sprinting. (holding W+A or W+D keys)
+	
+		&& (FVector::DotProduct(GetVelocity().GetSafeNormal2D(), GetActorRotation().Vector()) > 0.8); (holding W+A or W+D keys)
 }
 
 
@@ -386,11 +385,11 @@ void ASBaseCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	// Value is already updated locally, skip in replication step
+
 	DOREPLIFETIME_CONDITION(ASBaseCharacter, bWantsToRun, COND_SkipOwner);
 	DOREPLIFETIME_CONDITION(ASBaseCharacter, bIsTargeting, COND_SkipOwner);
 
-	// Replicate to every client, no special condition required
+	
 	DOREPLIFETIME(ASBaseCharacter, Health);
 	DOREPLIFETIME(ASBaseCharacter, LastTakeHitInfo);
 }
