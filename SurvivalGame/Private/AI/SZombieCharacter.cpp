@@ -271,11 +271,11 @@ void ASZombieCharacter::OnRetriggerMeleeStrike()
 		if (OverlappingPawn)
 		{
 			PerformMeleeStrike(OverlappingPawn);
-			//break; /* Uncomment to only attack one pawn maximum */
+			
 		}
 	}
 
-	/* No pawns in range, cancel the retrigger timer */
+	
 	if (Overlaps.Num() == 0)
 	{
 		TimerHandle_MeleeAttack.Invalidate();

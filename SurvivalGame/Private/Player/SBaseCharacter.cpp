@@ -325,7 +325,7 @@ bool ASBaseCharacter::IsSprinting() const
 
 	return bWantsToRun && !IsTargeting() && !GetVelocity().IsZero()
 	
-		&& (FVector::DotProduct(GetVelocity().GetSafeNormal2D(), GetActorRotation().Vector()) > 0.8); (holding W+A or W+D keys)
+		&& (FVector::DotProduct(GetVelocity().GetSafeNormal2D(), GetActorRotation().Vector()) > 0.8); 
 }
 
 
