@@ -9,7 +9,7 @@ ASGameState::ASGameState(const class FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	/* 1 SECOND real time is 1*TimeScale MINUTES game time */
-	TimeScale = 30.0f;
+	TimeScale = 15.0f;
 	bIsNight = false;
 
 	SunriseTimeMark = 3.0f;
@@ -74,12 +74,12 @@ int32 ASGameState::GetRealSecondsTillSunrise()
 	float ElapsedTimeToday = GetElapsedMinutesCurrentDay();
 	if (ElapsedTimeToday < SunRiseMinutes)
 	{
-		/* Still early in day cycle, so easy to get remaining time */
+	
 		return (SunRiseMinutes - ElapsedTimeToday) / TimeScale;
 	}
 	else
 	{
-		/* Sunrise will happen "tomorrow" so we need to add another full day to get remaining time */
+		
 		float MaxTimeTillNextSunrise = MinutesInDay + SunRiseMinutes;
 		return (MaxTimeTillNextSunrise - ElapsedTimeToday) / TimeScale;
 	}
@@ -92,7 +92,6 @@ int32 ASGameState::GetElapsedMinutesCurrentDay()
 }
 
 
-/* As with Server side functions, NetMulticast functions have a _Implementation body */
 void ASGameState::BroadcastGameMessage_Implementation(EHUDMessage MessageID)
 {
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
