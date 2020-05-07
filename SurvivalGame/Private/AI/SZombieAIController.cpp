@@ -4,7 +4,7 @@
 #include "SZombieAIController.h"
 #include "SZombieCharacter.h"
 
-/* AI Specific includes */
+
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -22,7 +22,6 @@ ASZombieAIController::ASZombieAIController(const class FObjectInitializer& Objec
 	BotTypeKeyName = "BotType";
 	TargetEnemyKeyName = "TargetEnemy";
 
-	/* Initializes PlayerState so we can assign a team index to AI */
 	bWantsPlayerState = true;
 }
 
@@ -51,7 +50,7 @@ void ASZombieAIController::OnUnPossess()
 {
 	Super::OnUnPossess();
 
-	/* Stop any behavior running as we no longer have a pawn to control */
+
 	BehaviorComp->StopTree();
 }
 

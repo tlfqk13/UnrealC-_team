@@ -46,7 +46,7 @@ void ASWeapon::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	/* Setup configuration */
+	
 	TimeBetweenShots = 60.0f / ShotsPerMinute;
 	CurrentAmmo = FMath::Min(StartAmmo, MaxAmmo);
 	CurrentAmmoInClip = FMath::Min(MaxAmmoPerClip, StartAmmo);
@@ -62,9 +62,7 @@ void ASWeapon::EndPlay(const EEndPlayReason::Type EndPlayReason)
 }
 
 
-/*
-	Return Mesh of Weapon
-*/
+
 USkeletalMeshComponent* ASWeapon::GetWeaponMesh() const
 {
 	return Mesh;
