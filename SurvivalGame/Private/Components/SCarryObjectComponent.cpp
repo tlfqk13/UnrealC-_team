@@ -26,11 +26,11 @@ void USCarryObjectComponent::TickComponent(float DeltaSeconds, enum ELevelTick T
 		}
 		else
 		{
-			/* NOTE: Slightly changed code from base implementation (USpringArmComponent) to use RemoteViewPitch instead of non-replicated ControlRotation */
+
 			if (bUsePawnControlRotation)
 			{
 				{
-					/* Re-map uint8 to 360 degrees */
+					
 					const float PawnViewPitch = (OwningPawn->RemoteViewPitch / 255.f)*360.f;
 					if (PawnViewPitch != GetComponentRotation().Pitch)
 					{
@@ -49,7 +49,7 @@ void USCarryObjectComponent::TickComponent(float DeltaSeconds, enum ELevelTick T
 
 void USCarryObjectComponent::Pickup()
 {
-	/* Drop if we are already carrying an Actor */
+	
 	if (GetIsCarryingActor())
 	{
 		Drop();
@@ -102,7 +102,7 @@ AActor* USCarryObjectComponent::GetActorInView()
 	FHitResult Hit(ForceInit);
 	GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_Visibility, TraceParams);
 
-	/* Check to see if we hit a staticmesh component that has physics simulation enabled */
+	
 	UStaticMeshComponent* MeshComp = Cast<UStaticMeshComponent>(Hit.GetComponent());
 	if (MeshComp && MeshComp->IsSimulatingPhysics())
 	{
@@ -152,23 +152,22 @@ void USCarryObjectComponent::Throw()
 		return;
 	}
 
-	/* Grab a reference to the MeshComp before dropping the object */
+	
 	UStaticMeshComponent* MeshComp = GetCarriedMeshComp();
 	if (MeshComp)
 	{
-		/* Detach and re-enable collision */
+		
 		OnDropMulticast();
 
 		APawn* OwningPawn = Cast<APawn>(GetOwner());
 		if (OwningPawn)
 		{
-			/* Re-map uint8 to 360 degrees */
+			
 			const float PawnViewPitch = (OwningPawn->RemoteViewPitch / 255.f)*360.f;
 
 			FRotator NewRotation = GetComponentRotation();
 			NewRotation.Pitch = PawnViewPitch;
 
-			/* Apply physics impulse, ignores mass */
 			MeshComp->AddImpulse(NewRotation.Vector() * 1000, NAME_None, true);
 		}
 	}
@@ -199,7 +198,7 @@ void USCarryObjectComponent::RotateActorAroundPoint(AActor* RotateActor, FVector
 
 	FVector NewLoc = RotationPoint + RotatedLoc;
 	
-	/* Compose the rotators, use Quats to avoid gimbal lock */
+	
 	FQuat AQuat = FQuat(RotateActor->GetActorRotation());
 	FQuat BQuat = FQuat(AddRotation);
 
@@ -213,8 +212,6 @@ void USCarryObjectComponent::OnPickupMulticast_Implementation(AActor* FocusActor
 {
 	if (FocusActor && FocusActor->IsRootComponentMovable())
 	{
-		/* Find the static mesh (if any) to disable physics simulation while carried
-		Filter by objects that are physically simulated and can therefor be picked up */
 		UStaticMeshComponent* MeshComp = Cast<UStaticMeshComponent>(FocusActor->GetComponentByClass(UStaticMeshComponent::StaticClass()));
 		if (MeshComp && MeshComp->IsSimulatingPhysics())
 		{
@@ -232,7 +229,6 @@ void USCarryObjectComponent::OnDropMulticast_Implementation()
 	AActor* CarriedActor = GetCarriedActor();
 	if (CarriedActor)
 	{
-		/* Find the static mesh (if any) to re-enable physics simulation */
 		UStaticMeshComponent* MeshComp = Cast<UStaticMeshComponent>(CarriedActor->GetComponentByClass(UStaticMeshComponent::StaticClass()));
 		if (MeshComp)
 		{
@@ -250,7 +246,6 @@ void USCarryObjectComponent::OnRotateMulticast_Implementation(float DirectionYaw
 	AActor* CarriedActor = GetCarriedActor();
 	if (CarriedActor)
 	{
-		/* Retrieve the object center */
 		FVector RootOrigin = GetCarriedActor()->GetRootComponent()->Bounds.Origin;
 		FRotator DeltaRot = FRotator(0, DirectionYaw * RotateSpeed, DirectionRoll * RotateSpeed);
 
