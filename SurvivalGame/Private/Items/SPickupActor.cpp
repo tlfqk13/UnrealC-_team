@@ -8,6 +8,7 @@
 ASPickupActor::ASPickupActor(const class FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	/* Ignore Pawn - this is to prevent objects shooting through the level or pawns glitching on top of small items. */
 	MeshComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 
 	bIsActive = false;
@@ -47,7 +48,7 @@ void ASPickupActor::OnUsed(APawn* InstigatorPawn)
 	}
 	else
 	{
-		
+		/* Delete from level if respawn is not allowed */
 		Destroy();
 	}
 }

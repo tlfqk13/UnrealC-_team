@@ -13,7 +13,7 @@ float USCharacterMovementComponent::GetMaxSpeed() const
 	const ASBaseCharacter* CharOwner = Cast<ASBaseCharacter>(PawnOwner);
 	if (CharOwner)
 	{
-		
+		// Slow down during targeting or crouching
 		if (CharOwner->IsTargeting() && !IsCrouching())
 		{
 			MaxSpeed *= CharOwner->GetTargetingSpeedModifier();

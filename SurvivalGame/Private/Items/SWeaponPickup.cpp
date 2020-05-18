@@ -12,7 +12,7 @@ ASWeaponPickup::ASWeaponPickup(const FObjectInitializer& ObjectInitializer)
 {
 	bAllowRespawn = false;
 
-	
+	/* Enabled to support simulated physics movement when weapons are dropped by a player */
 	bReplicateMovement = true;
 }
 
@@ -22,7 +22,7 @@ void ASWeaponPickup::OnUsed(APawn* InstigatorPawn)
 	ASCharacter* MyPawn = Cast<ASCharacter>(InstigatorPawn);
 	if (MyPawn)
 	{
-		
+		/* Fetch the default variables of the class we are about to pick up and check if the storage slot is available on the pawn. */
 		if (MyPawn->WeaponSlotAvailable(WeaponClass->GetDefaultObject<ASWeapon>()->GetStorageSlot()))
 		{
 			FActorSpawnParameters SpawnInfo;

@@ -10,7 +10,10 @@ public class SurvivalGame : ModuleRules
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule",
             /* Temporarily added GameplayTasks to workaround 4.12 compilation bug. */
             "GameplayTasks",
-            "NavigationSystem" });
+            "NavigationSystem",
+            "Sockets",
+            "Networking"
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

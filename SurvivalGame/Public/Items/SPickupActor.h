@@ -5,6 +5,9 @@
 #include "SUsableActor.h"
 #include "SPickupActor.generated.h"
 
+/**
+ * 
+ */
 UCLASS(ABSTRACT)
 class SURVIVALGAME_API ASPickupActor : public ASUsableActor
 {

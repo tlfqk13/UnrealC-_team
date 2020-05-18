@@ -8,17 +8,17 @@
 #include "SHUD.h"
 #include "SGameState.h"
 
-
+/* Define a log category for error messages */
 DEFINE_LOG_CATEGORY_STATIC(LogGame, Log, All);
 
 
 ASPlayerController::ASPlayerController(const class FObjectInitializer& ObjectInitializer)
 : Super(ObjectInitializer)
 {
-	
+	/* Assign the class types we wish to use */
 	PlayerCameraManagerClass = ASPlayerCameraManager::StaticClass();
 
-	
+	/* Example - Can be set to true for debugging, generally a value like this would exist in the GameMode instead */
 	bRespawnImmediately = false;
 }
 
@@ -27,11 +27,11 @@ void ASPlayerController::UnFreeze()
 {
 	Super::UnFreeze();
 
-	
+	// Check if match is ending or has ended.
 	ASGameState* MyGameState = GetWorld()->GetGameState<ASGameState>();
 	if (MyGameState && MyGameState->HasMatchEnded())
 	{
-		
+		/* Don't allow spectating or respawns */
 		return;
 	}
 
@@ -57,10 +57,10 @@ void ASPlayerController::StartSpectating()
 	/* Push the state update to the client */
 	ClientGotoState(NAME_Spectating);
 
-	
+	/* Focus on the remaining alive player */
 	ViewAPlayer(1);
 
-	
+	/* Update the HUD to show the spectator screen */
 	ClientHUDStateChanged(EHUDState::Spectating);
 }
 

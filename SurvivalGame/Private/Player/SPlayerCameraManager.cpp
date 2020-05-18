@@ -16,7 +16,7 @@ ASPlayerCameraManager::ASPlayerCameraManager(const class FObjectInitializer& Obj
 	bAlwaysApplyModifiers = true;
 
 	/* The camera delta between standing and crouched */
-	MaxCrouchOffsetZ = 35.0f;
+	MaxCrouchOffsetZ = 46.0f;
 
 	/* HACK. Mirrored from the 3rd person camera offset from SCharacter */
 	DefaultCameraOffsetZ = 20.0f;
@@ -29,6 +29,13 @@ ASPlayerCameraManager::ASPlayerCameraManager(const class FObjectInitializer& Obj
 void ASPlayerCameraManager::BeginPlay()
 {
 	Super::BeginPlay();
+
+// 	ASCharacter* MyPawn = PCOwner ? Cast<ASCharacter>(PCOwner->GetPawn()) : nullptr;
+// 	if (MyPawn)
+// 	{
+// 		/* Cache the offset Z value of the camera to maintain a correct offset while transition during crouches */
+// 		DefaultCameraOffsetZ = MyPawn->GetCameraComponent()->GetRelativeTransform().GetLocation().Z;
+// 	}
 }
 
 
@@ -42,7 +49,7 @@ void ASPlayerCameraManager::UpdateCamera(float DeltaTime)
 		SetFOV(DefaultFOV);
 	}
 
-	
+	/* Apply smooth camera lerp between crouch toggling */
 	if (MyPawn)
 	{
 		if (MyPawn->bIsCrouched && !bWasCrouched)
@@ -55,7 +62,7 @@ void ASPlayerCameraManager::UpdateCamera(float DeltaTime)
 		}
 
 		bWasCrouched = MyPawn->bIsCrouched;
-	
+		/* Clamp the lerp to 0-1.0 range and interpolate to our new crouch offset */
 		CurrentCrouchOffset = FMath::Lerp(CurrentCrouchOffset, 0.0f, FMath::Clamp(CrouchLerpVelocity * DeltaTime, 0.0f, 1.0f));
 
 		FVector CurrentCameraOffset = MyPawn->GetCameraComponent()->GetRelativeTransform().GetLocation();
